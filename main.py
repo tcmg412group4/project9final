@@ -188,7 +188,7 @@ def set():
                "result": True,
                "error": ""
            }
-            return jsonify(keypair)
+            return jsonify(keypair), 200
         else:
             keypair_notfound = {
                "storage-key": payload["key"],
@@ -205,6 +205,7 @@ def get(inputval):
     
     if request.method =="GET":
         command = "READ value for the following key: " + inputval
+        
         if r.exists(inputval):
             value = r.get(inputval)
             keypair = {
@@ -214,7 +215,8 @@ def get(inputval):
                "result": True,
                "error": ""
            }
-            return jsonify(keypair)
+            return jsonify(keypair), 200
+        
         else:
              keypair_notfound = {
                "storage-key": inputval,
@@ -227,9 +229,11 @@ def get(inputval):
 
     elif request.method == "DELETE":
         command = "Delete the stored value for key: " + inputval
-        if r.exists(inputval) == 1: # 1 is True
+        
+        if r.exists(inputval): # 1 is True
             value = r.get(inputval)
             r.delete(inputval)
+            
             keypair_deleted = {
                "storage-key": inputval,
                "storage-val": value,
@@ -237,7 +241,8 @@ def get(inputval):
                "result": True,
                "error": "Key pair was found and deleted from database"
            }
-            return jsonify(keypair_deleted)
+            return jsonify(keypair_deleted), 200
+        
         else:
             keypair_notfound = {
                "storage-key": inputval,
