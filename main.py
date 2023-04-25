@@ -207,10 +207,10 @@ def get(inputval):
         command = "READ value for the following key: " + inputval
         
         if r.exists(inputval):
-            value = r.get(inputval)
+            storage_value = r.get(inputval)
             keypair = {
                "storage-key": inputval,
-               "storage-val": value,
+               "storage-val": storage_value,
                "command": command,
                "result": True,
                "error": ""
@@ -231,12 +231,12 @@ def get(inputval):
         command = "Delete the stored value for key: " + inputval
         
         if r.exists(inputval): # 1 is True
-            value = r.get(inputval)
+            storage_value = r.get(inputval)
             r.delete(inputval)
             
             keypair_deleted = {
                "storage-key": inputval,
-               "storage-val": value,
+               "storage-val": storage_value,
                "command": command,
                "result": True,
                "error": "Key pair was found and deleted from database"
