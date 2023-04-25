@@ -148,6 +148,8 @@ def slack_alert(post):
             output=flag
         )
 
+# ----------------------------------------------------------------------------------------------------------------------
+
 @app.route("/keyval", methods=["POST"])
 def post():
     payload = request.get_json()
@@ -162,7 +164,7 @@ def post():
             "result": False,
             "error": "Key already exists"
         } 
-        return jsonify(keypair_found), abort(409)
+        return jsonify(keypair_found), 409
 
     else:
         r.set(payload['key'], payload['value'])
@@ -198,7 +200,7 @@ def put():
             "result": False,
             "error": "Key does not exist"
         } 
-        return jsonify(keypair_notfound), abort(404)
+        return jsonify(keypair_notfound), 404
 
 @app.route("/keyval/<string:inputval>", methods=["GET"])
 def get(inputval):
@@ -223,7 +225,7 @@ def get(inputval):
                "result": False,
                "error": "Key does not exist"
            }
-             return jsonify(keypair_notfound), abort(404)
+             return jsonify(keypair_notfound), 404
 
 @app.route("/keyval/<string:inputval>", methods=["DELETE"])
 def delete(inputval):
@@ -250,7 +252,7 @@ def delete(inputval):
             "result": False,
             "error": "Unable to delete key: Key does not exist"
         }
-        return jsonify(keypair_notfound), abort(404)
+        return jsonify(keypair_notfound), 404
 
    
 if __name__ == "__main__":                                  # debug mode for testing, port 4000 as per assignment instructions
