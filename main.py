@@ -8,7 +8,7 @@ import socket
 import json 
 
 
-r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+r = redis.Redis(host="myredis", port=6379, decode_responses=True)
 
 
 app = Flask(__name__)
