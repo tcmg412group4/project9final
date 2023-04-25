@@ -148,58 +148,7 @@ def slack_alert(post):
             output=flag
         )
 
-
-# @app.route("/keyval", methods=[ "POST", "PUT"])
-# def set():
-#     payload = request.get_json()
-    
-#     if request.method == 'POST':
-       
-#        if r.exists(payload["key"]):
-#            #create object to return if it exists
-#            keypair_found = {
-#                "storage-key": payload["key"],
-#                "storage-val": payload["value"],
-#                "command": f"CREATE {payload['key']}/{payload['value']}",
-#                "result": False,
-#                "error": "Key already exists"
-#            } 
-#            return jsonify(keypair_found), abort(409)
-
-#        else:
-#            r.set(payload['key'], payload['value'])
-#            keypair = {
-#                "storage-key": payload["key"],
-#                "storage-val": payload["value"],
-#                "command": f"CREATE {payload['key']}/{payload['value']}",
-#                "result": True,
-#                "error": ""
-#            }
-#            return jsonify(keypair)
-
-#     elif request.method == "PUT":
-
-#         if r.exists(payload["key"]):
-#             r.set(payload['key'], payload['value'])
-#             keypair = {
-#                "storage-key": payload["key"],
-#                "storage-val": payload["value"],
-#                "command": f"UPDATE {payload['key']}/{payload['value']}",
-#                "result": True,
-#                "error": ""
-#            }
-#             return jsonify(keypair), 200
-#         else:
-#             keypair_notfound = {
-#                "storage-key": payload["key"],
-#                "storage-val": payload["value"],
-#                "command": f"UPDATE {payload['key']}/{payload['value']}",
-#                "result": False,
-#                "error": "Key does not exist"
-#            } 
-#             return jsonify(keypair_notfound), abort(404)
-
-@app.route("/keyval", methods=[ "POST"])
+@app.route("/keyval", methods=["POST"])
 def post():
     payload = request.get_json()
        
@@ -227,7 +176,7 @@ def post():
         }
         return jsonify(keypair), 200
 
-@app.route("/keyval", methods=[ "PUT"])
+@app.route("/keyval", methods=["PUT"])
 def put():
     payload = request.get_json()
 
