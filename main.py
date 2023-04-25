@@ -277,7 +277,7 @@ def get(inputval):
              return jsonify(keypair_notfound), abort(404)
 
 @app.route("/keyval/<string:inputval>", methods=["DELETE"])
-def get(inputval):
+def delete(inputval):
     command = "Delete the stored value for key: " + inputval
         
     if r.exists(inputval): # 1 is True
