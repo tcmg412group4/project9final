@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, Response, abort
 from redis import Redis, RedisError
 import redis
 import hashlib                                              # used for MD5 Hash
@@ -8,7 +8,7 @@ import socket
 import json 
 
 
-r = redis.Redis(host="myredis", port=6379, decode_responses=True)
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
 app = Flask(__name__)
@@ -151,52 +151,49 @@ def slack_alert(post):
 
 @app.route("/keyval", methods=[ "POST", "PUT"])
 def set():
-    data = request.get_json()
+    payload = request.get_json()
     
     if request.method == 'POST':
-       command = "Create " + data["key"] + "/" + data["value"]
-       if r.exists(data["key"]):
+       
+       if r.exists(payload["key"]):
            #create object to return if it exists
            keypair_found = {
-               "storage-key": data["key"],
-               "storage-val": data["value"],
-               "command": command,
+               "storage-key": payload["key"],
+               "storage-val": payload["value"],
+               "command": f"CREATE {payload['key']}/{payload['value']}",
                "result": False,
-               "error": "Unable to add key pair: key already exists"
+               "error": "Key already exists"
            } 
            return jsonify(keypair_found), abort(409)
-       else:
-           key = data["key"]
-           value = data[value]
-           r.set(key, value)
 
+       else:
+           r.set(payload['key'], payload['value'])
            keypair = {
-               "storage-key": data["key"],
-               "storage-val": data["value"],
-               "command": command,
+               "storage-key": payload["key"],
+               "storage-val": payload["value"],
+               "command": f"CREATE {payload['key']}/{payload['value']}",
                "result": True,
                "error": ""
            }
            return jsonify(keypair)
+
     elif request.method == "PUT":
-        command = "Update " + data["key"] + "/" + data["value"]
-        key = data["key"]
-        value = data["value"]
-        if r.exists(data["key"]):
-            r.set(key,value)
+
+        if r.exists(payload["key"]):
+            r.set(payload['key'], payload['value'])
             keypair = {
-               "storage-key": data["key"],
-               "storage-val": data["value"],
-               "command": command,
+               "storage-key": payload["key"],
+               "storage-val": payload["value"],
+               "command": f"UPDATE {payload['key']}/{payload['value']}",
                "result": True,
                "error": ""
            }
             return jsonify(keypair)
         else:
             keypair_notfound = {
-               "storage-key": data["key"],
-               "storage-val": data["value"],
-               "command": command,
+               "storage-key": payload["key"],
+               "storage-val": payload["value"],
+               "command": f"UPDATE {payload['key']}/{payload['value']}",
                "result": False,
                "error": "Key does not exist"
            } 
