@@ -149,61 +149,110 @@ def slack_alert(post):
         )
 
 
-@app.route("/keyval", methods=[ "POST", "PUT"])
-def set():
-    payload = request.get_json()
+# @app.route("/keyval", methods=[ "POST", "PUT"])
+# def set():
+#     payload = request.get_json()
     
-    if request.method == 'POST':
+#     if request.method == 'POST':
        
-       if r.exists(payload["key"]):
-           #create object to return if it exists
-           keypair_found = {
-               "storage-key": payload["key"],
-               "storage-val": payload["value"],
-               "command": f"CREATE {payload['key']}/{payload['value']}",
-               "result": False,
-               "error": "Key already exists"
-           } 
-           return jsonify(keypair_found), abort(409)
+#        if r.exists(payload["key"]):
+#            #create object to return if it exists
+#            keypair_found = {
+#                "storage-key": payload["key"],
+#                "storage-val": payload["value"],
+#                "command": f"CREATE {payload['key']}/{payload['value']}",
+#                "result": False,
+#                "error": "Key already exists"
+#            } 
+#            return jsonify(keypair_found), abort(409)
 
-       else:
-           r.set(payload['key'], payload['value'])
-           keypair = {
-               "storage-key": payload["key"],
-               "storage-val": payload["value"],
-               "command": f"CREATE {payload['key']}/{payload['value']}",
-               "result": True,
-               "error": ""
-           }
-           return jsonify(keypair)
+#        else:
+#            r.set(payload['key'], payload['value'])
+#            keypair = {
+#                "storage-key": payload["key"],
+#                "storage-val": payload["value"],
+#                "command": f"CREATE {payload['key']}/{payload['value']}",
+#                "result": True,
+#                "error": ""
+#            }
+#            return jsonify(keypair)
 
-    elif request.method == "PUT":
+#     elif request.method == "PUT":
 
-        if r.exists(payload["key"]):
-            r.set(payload['key'], payload['value'])
-            keypair = {
-               "storage-key": payload["key"],
-               "storage-val": payload["value"],
-               "command": f"UPDATE {payload['key']}/{payload['value']}",
-               "result": True,
-               "error": ""
-           }
-            return jsonify(keypair), 200
-        else:
-            keypair_notfound = {
-               "storage-key": payload["key"],
-               "storage-val": payload["value"],
-               "command": f"UPDATE {payload['key']}/{payload['value']}",
-               "result": False,
-               "error": "Key does not exist"
-           } 
-            return jsonify(keypair_notfound), abort(404)
+#         if r.exists(payload["key"]):
+#             r.set(payload['key'], payload['value'])
+#             keypair = {
+#                "storage-key": payload["key"],
+#                "storage-val": payload["value"],
+#                "command": f"UPDATE {payload['key']}/{payload['value']}",
+#                "result": True,
+#                "error": ""
+#            }
+#             return jsonify(keypair), 200
+#         else:
+#             keypair_notfound = {
+#                "storage-key": payload["key"],
+#                "storage-val": payload["value"],
+#                "command": f"UPDATE {payload['key']}/{payload['value']}",
+#                "result": False,
+#                "error": "Key does not exist"
+#            } 
+#             return jsonify(keypair_notfound), abort(404)
 
+@app.route("/keyval", methods=[ "POST"])
+def post():
+    payload = request.get_json()
+       
+    if r.exists(payload["key"]):
+        #create object to return if it exists
+        
+        keypair_found = {
+            "storage-key": payload["key"],
+            "storage-val": payload["value"],
+            "command": f"CREATE {payload['key']}/{payload['value']}",
+            "result": False,
+            "error": "Key already exists"
+        } 
+        return jsonify(keypair_found), abort(409)
 
-@app.route("/keyval/<string:inputval>", methods=["GET", "DELETE"])
+    else:
+        r.set(payload['key'], payload['value'])
+        
+        keypair = {
+            "storage-key": payload["key"],
+            "storage-val": payload["value"],
+            "command": f"CREATE {payload['key']}/{payload['value']}",
+            "result": True,
+            "error": ""
+        }
+        return jsonify(keypair), 200
+
+@app.route("/keyval", methods=[ "PUT"])
+def put():
+    payload = request.get_json()
+
+    if r.exists(payload["key"]):
+        r.set(payload['key'], payload['value'])
+        keypair = {
+            "storage-key": payload["key"],
+            "storage-val": payload["value"],
+            "command": f"UPDATE {payload['key']}/{payload['value']}",
+            "result": True,
+            "error": ""
+        }
+        return jsonify(keypair), 200
+    else:
+        keypair_notfound = {
+            "storage-key": payload["key"],
+            "storage-val": payload["value"],
+            "command": f"UPDATE {payload['key']}/{payload['value']}",
+            "result": False,
+            "error": "Key does not exist"
+        } 
+        return jsonify(keypair_notfound), abort(404)
+
+@app.route("/keyval/<string:inputval>", methods=["GET"])
 def get(inputval):
-    
-    if request.method =="GET":
         command = "READ value for the following key: " + inputval
         
         if r.exists(inputval):
@@ -227,31 +276,32 @@ def get(inputval):
            }
              return jsonify(keypair_notfound), abort(404)
 
-    elif request.method == "DELETE":
-        command = "Delete the stored value for key: " + inputval
+@app.route("/keyval/<string:inputval>", methods=["DELETE"])
+def get(inputval):
+    command = "Delete the stored value for key: " + inputval
         
-        if r.exists(inputval): # 1 is True
-            storage_value = r.get(inputval)
-            r.delete(inputval)
-            
-            keypair_deleted = {
-               "storage-key": inputval,
-               "storage-val": storage_value,
-               "command": command,
-               "result": True,
-               "error": "Key pair was found and deleted from database"
-           }
-            return jsonify(keypair_deleted), 200
+    if r.exists(inputval): # 1 is True
+        storage_value = r.get(inputval)
+        r.delete(inputval)
+          
+        keypair_deleted = {
+            "storage-key": inputval,
+            "storage-val": storage_value,
+            "command": command,
+            "result": True,
+            "error": "Key pair was found and deleted from database"
+        }
+        return jsonify(keypair_deleted), 200
         
-        else:
-            keypair_notfound = {
-               "storage-key": inputval,
-               "storage-val": "Not found",
-               "command": command,
-               "result": False,
-               "error": "Unable to delete key: Key does not exist"
-           }
-            return jsonify(keypair_notfound), abort(404)
+    else:
+        keypair_notfound = {
+            "storage-key": inputval,
+            "storage-val": "Not found",
+            "command": command,
+            "result": False,
+            "error": "Unable to delete key: Key does not exist"
+        }
+        return jsonify(keypair_notfound), abort(404)
 
    
 if __name__ == "__main__":                                  # debug mode for testing, port 4000 as per assignment instructions
