@@ -154,25 +154,25 @@ def slack_alert(post):
 def post():
     payload = request.get_json()
        
-    if r.exists(payload["key"]):
+    if r.exists(payload["storage-key"]):
         #create object to return if it exists
         
         keypair_found = {
-            "storage-key": payload["key"],
-            "storage-val": payload["value"],
-            "command": f"CREATE {payload['key']}/{payload['value']}",
+            "storage-key": payload["storage-key"],
+            "storage-val": payload["storage-val"],
+            "command": f"CREATE {payload['storage-key']}/{payload['storage-val']}",
             "result": False,
             "error": "Key already exists"
         } 
         return jsonify(keypair_found), 409
 
     else:
-        r.set(payload['key'], payload['value'])
+        r.set(payload['storage-key'], payload['storage-val'])
         
         keypair = {
-            "storage-key": payload["key"],
-            "storage-val": payload["value"],
-            "command": f"CREATE {payload['key']}/{payload['value']}",
+            "storage-key": payload["storage-key"],
+            "storage-val": payload["storage-val"],
+            "command": f"CREATE {payload['storage-key']}/{payload['storage-val']}",
             "result": True,
             "error": ""
         }
@@ -202,7 +202,7 @@ def put():
         } 
         return jsonify(keypair_notfound), 404
 
-@app.route("/keyval/<string:inputval>", methods=["GET"])
+@app.route('/keyval/<string:inputval>', methods=["GET"])
 def get(inputval):
         command = "READ value for the following key: " + inputval
         
@@ -227,7 +227,7 @@ def get(inputval):
            }
              return jsonify(keypair_notfound), 404
 
-@app.route("/keyval/<string:inputval>", methods=["DELETE"])
+@app.route('/keyval/<string:inputval>', methods=["DELETE"])
 def delete(inputval):
     command = "Delete the stored value for key: " + inputval
         
