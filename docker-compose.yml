@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  myapi: 
+    build: .
+    ports:
+      - "4000:4000"
+    networks:
+      - mynet
+    depends_on:
+      - myredis
+  myredis:
+    image: redis:latest
+    networks:
+      - mynet
+
+networks:
+  mynet:
