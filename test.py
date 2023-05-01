@@ -1,4 +1,6 @@
 import requests
+from flask import jsonify
+import json
 
 
 errors = 0
@@ -194,6 +196,7 @@ else:
 ####################################################################
 count = 0
 
+#POST
 url = "http://127.0.0.1:4000/keyval"
 response = requests.post(url, json={"storage-key": "new key", "storage-val": "new value"})
 if (response.status_code == 200):
@@ -211,7 +214,7 @@ else:
     print("ERROR! Did not pass ❌")
     count += 1 
 
-#(GET) Test Cases
+#GET
 url = "http://127.0.0.1:4000/keyval/testing"
 response = requests.get(url)
 if (response.status_code == 200 ):
@@ -237,7 +240,7 @@ else:
     print("ERROR! Did not pass ❌")
     count += 1 
 
-#(PUT) Test Cases
+#PUT
 url = "http://127.0.0.1:4000/keyval"
 response = requests.put(url, json={"storage-key": "new key", "storage-val": "new value"})
 if (response.status_code == 200):
@@ -255,7 +258,7 @@ else:
    print("ERROR! Did not pass❌")
    count += 1
 
-#(DELETE) Test Cases
+#DELETE
 url = "http://127.0.0.1:4000/keyval/testdelete"
 response = requests.delete(url)
 j = response.json()
