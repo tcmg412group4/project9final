@@ -8,7 +8,7 @@ import socket
 import json 
 
 
-r = redis.Redis(host="myredis", port=6379, decode_responses=True)
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
 app = Flask(__name__)
@@ -182,21 +182,21 @@ def post():
 def put():
     payload = request.get_json()
 
-    if r.exists(payload["key"]):
-        r.set(payload['key'], payload['value'])
+    if r.exists(payload["storage-key"]):
+        r.set(payload['storage-key'], payload['storage-val'])
         keypair = {
-            "storage-key": payload["key"],
-            "storage-val": payload["value"],
-            "command": f"UPDATE {payload['key']}/{payload['value']}",
+            "storage-key": payload["storage-key"],
+            "storage-val": payload["storage-val"],
+            "command": f"UPDATE {payload['storage-key']}/{payload['storage-val']}",
             "result": True,
             "error": ""
         }
         return jsonify(keypair), 200
     else:
         keypair_notfound = {
-            "storage-key": payload["key"],
-            "storage-val": payload["value"],
-            "command": f"UPDATE {payload['key']}/{payload['value']}",
+            "storage-key": payload["storage-key"],
+            "storage-val": payload["storage-val"],
+            "command": f"UPDATE {payload['storage-key']}/{payload['storage-val']}",
             "result": False,
             "error": "Key does not exist"
         } 
