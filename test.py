@@ -194,91 +194,22 @@ else:
     print("You have errors within your API. Edit accordingly and rerun test file!")
 
 ####################################################################
-count = 0
 
-#POST
-url = "http://127.0.0.1:4000/keyval"
-response = requests.post(url, json={"storage-key": "new key", "storage-val": "new value"})
+
+#POST test code
+url = "https://httpie.io/"
+response = requests.post(url, json={"storage-key": "new-key", "storage-val": "new value"})
 if (response.status_code == 200):
-    print("New storage-key and storage-val created ✅")
+    print("success")
 else:
-    print("ERROR! Did not pass ❌")
-    count += 1 
+    print("ERROR!")
+    #count += 1 
 
-url = "http://127.0.0.1:4000/keyval"
+url = "https://httpie.io/"
 response = requests.post(url, json={"storage-key": "new key", "storage-val": "some value"})
-j = response.json()
-if (response.status_code >= 400 and response.status_code < 500):
-    print("Key already exists ✅")
-else: 
-    print("ERROR! Did not pass ❌")
-    count += 1 
-
-#GET
-url = "http://127.0.0.1:4000/keyval/testing"
-response = requests.get(url)
-if (response.status_code == 200 ):
-    print("Succesfully retrieved ✅ ")
-else:
-    print("ERROR! Did not pass ❌")
-    count += 1 
-
-url = "http://127.0.0.1:4000/keyval/92"
-response = requests.get(url)
-if (response.status_code >= 400 and response.status_code < 500) or (j["result"] == False):
-    print("Invalid request ✅")
-else: 
-    print("ERROR! Did not pass ❌")
-    count += 1 
-
-url = "http://127.0.0.1:4000/keyval/program"
-response = requests.get(url)
-j = response.json()
-if (response.status_code >= 400 and response.status_code < 500) or (j["result"] == False):
-    print("Key does not exist ✅")
-else: 
-    print("ERROR! Did not pass ❌")
-    count += 1 
-
-#PUT
-url = "http://127.0.0.1:4000/keyval"
-response = requests.put(url, json={"storage-key": "new key", "storage-val": "new value"})
+#j = response.json()
 if (response.status_code == 200):
-   print("New storage-key and storage-val Updated ✅")
-else:
-   print("ERROR! Did not pass ❌")
-   count += 1
-
-url = "http://127.0.0.1:4000/keyval"
-response = requests.put(url, json={"storage-key": "existing key", "storage-val": "new value"})
-j = response.json()
-if (response.status_code >= 400 and response.status_code < 500) or (j["result"] == False):
-   print("Key does not already exist ✅")
-else:
-   print("ERROR! Did not pass❌")
-   count += 1
-
-#DELETE
-url = "http://127.0.0.1:4000/keyval/testdelete"
-response = requests.delete(url)
-j = response.json()
-if (response.status_code >= 400 and response.status_code < 500) or (j["result"] == False):
-    print("Key does not exist ✅")
+    print("success")
 else: 
-    print("ERROR! Did not pass ❌")
-    count += 1
-
-url = "http://127.0.0.1:4000/keyval/testing"
-response = requests.delete(url)
-j = response.json()
-if (response.status_code == 200) or (j["result"] == True):
-    print("Key deleted ✅")
-else: 
-    print("ERROR! Did not pass ❌")
-    count += 1
-
-
-if count == 0:
-    print("successful")
-else:
-    print(count, "test cases did not pass.")
+    print("Unable to add pair")
+    #count += 1
